@@ -38,8 +38,8 @@ const SITE = {
 
   // One line under your name.
   role: {
-    en: "Senior CS student · future game developer",
-    es: "Estudiante de último año de informática · futuro desarrollador de videojuegos"
+    en: "Senior CS student @ UWT · Future game developer",
+    es: "Estudiante de último año de informática @ UWT · Futuro desarrollador de videojuegos"
   },
 
   // What you're working on right now, shown next to the progress bar.
