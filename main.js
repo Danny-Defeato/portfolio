@@ -68,8 +68,27 @@
     if (el) el.textContent = text;
   }
 
+  // Forgive small typos in a card's status ("Done", " wip ").
+  // Anything unrecognized counts as an idea.
+  SITE.cards.forEach(function (card) {
+    const status = String(card.status || "").trim().toLowerCase();
+    card.status = status === "done" || status === "wip" ? status : "idea";
+  });
+
   function sortedCards() {
     return SITE.cards.slice().sort(function (a, b) { return a.number - b.number; });
+  }
+
+  // The nav bar wraps to two rows on phones. Keep track of its real
+  // height so jumping to a section never hides the heading under it.
+  function trackNavHeight() {
+    const nav = document.querySelector(".topbar");
+    function update() {
+      document.documentElement.style.setProperty("--nav-offset", nav.offsetHeight + "px");
+    }
+    update();
+    window.addEventListener("resize", update);
+    if ("ResizeObserver" in window) new ResizeObserver(update).observe(nav);
   }
 
   // The finished card with the highest number.
@@ -92,9 +111,15 @@
     art.dataset.art = String(((card.number - 1) % 5) + 1);
     if (card.cover) {
       const img = document.createElement("img");
-      img.src = card.cover;
       img.alt = "";
       img.loading = "lazy";
+      // If the screenshot can't be found (for example a typo in the
+      // path), fall back to the generated art instead of a broken image.
+      img.addEventListener("error", function () {
+        img.remove();
+        art.classList.remove("has-cover");
+      });
+      img.src = card.cover;
       art.classList.add("has-cover");
       art.append(img);
     }
@@ -103,18 +128,29 @@
 
   // ---------- Name ----------
 
-  // Split the name into letters so each one can hop on hover.
+  // Split the name into letters so each one can hop on hover. Letters are
+  // grouped by word, so a long name wraps between words, never mid-word.
   function renderName() {
     const el = document.getElementById("name");
     el.replaceChildren();
     el.setAttribute("aria-label", SITE.name);
-    Array.from(SITE.name).forEach(function (ch, i) {
-      const span = document.createElement("span");
-      span.className = "name-letter";
-      span.setAttribute("aria-hidden", "true");
-      span.style.setProperty("--i", i);
-      span.textContent = ch;
-      el.append(span);
+    let i = 0;
+    SITE.name.split(" ").filter(Boolean).forEach(function (word, w) {
+      if (w > 0) {
+        el.append(" ");
+        i++;
+      }
+      const wordSpan = document.createElement("span");
+      wordSpan.className = "name-word";
+      Array.from(word).forEach(function (ch) {
+        const span = document.createElement("span");
+        span.className = "name-letter";
+        span.setAttribute("aria-hidden", "true");
+        span.style.setProperty("--i", i++);
+        span.textContent = ch;
+        wordSpan.append(span);
+      });
+      el.append(wordSpan);
     });
   }
 
@@ -200,9 +236,13 @@
     images.replaceChildren();
     (card.images || []).forEach(function (src, i) {
       const img = document.createElement("img");
-      img.src = src;
       img.alt = t(card.title, lang) + " screenshot " + (i + 1);
-      img.loading = "lazy";
+      // Skip screenshots that can't be found instead of showing a broken image.
+      img.addEventListener("error", function () {
+        img.remove();
+        if (!images.children.length) images.hidden = true;
+      });
+      img.src = src;
       images.append(img);
     });
     images.hidden = !(card.images && card.images.length);
@@ -427,11 +467,17 @@
     shown.className = "contact-value";
     const display = kind === "email" || kind === "discord" ? value : shortUrl(value);
     // On narrow screens, long addresses wrap after the @ or a slash
-    // instead of in the middle of a word.
-    display.split(/(?<=[@\/])/).forEach(function (part, i) {
-      if (i > 0) shown.append(document.createElement("wbr"));
-      shown.append(part);
+    // instead of in the middle of a word. (Built letter by letter so it
+    // works on older phones too.)
+    let chunk = "";
+    Array.from(display).forEach(function (ch) {
+      chunk += ch;
+      if (ch === "@" || ch === "/") {
+        shown.append(chunk, document.createElement("wbr"));
+        chunk = "";
+      }
     });
+    if (chunk) shown.append(chunk);
     text.append(label, shown);
 
     main.append(icon, text);
@@ -613,6 +659,7 @@
     .querySelectorAll(".section > h2, .about-body, .contact-panel, .foot-row")
     .forEach(function (el) { el.dataset.reveal = ""; });
 
+  trackNavHeight();
   setupThemeToggle();
   setupDetail();
   render(pickLanguage());

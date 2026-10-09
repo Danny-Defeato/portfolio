@@ -59,7 +59,9 @@ body {
 }
 
 /* Keep section headings from hiding under the sticky nav after a jump. */
-[id] { scroll-margin-top: calc(var(--nav-height) + 16px); }
+/* --nav-offset is the nav bar's real height, measured by main.js
+   (it's taller on phones, where the nav wraps to two rows). */
+[id] { scroll-margin-top: calc(var(--nav-offset, var(--nav-height)) + 16px); }
 
 a { color: inherit; }
 
@@ -69,6 +71,7 @@ a { color: inherit; }
   position: sticky;
   top: 0;
   z-index: 10;
+  background: var(--bg); /* solid fallback for older browsers */
   background: color-mix(in srgb, var(--bg) 82%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -638,6 +641,7 @@ main {
   max-width: calc(100% - 40px);
   padding: 10px 18px 10px 10px;
   border-radius: 16px;
+  background: var(--surface-2); /* solid fallback for older browsers */
   background: color-mix(in srgb, var(--surface-2) 92%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -870,6 +874,7 @@ main {
 }
 
 /* 4. Name: hover over it and the letters hop in a wave. */
+.name-word { white-space: nowrap; }
 .motion .name-letter { display: inline-block; }
 
 .motion .banner h1:hover .name-letter {

@@ -138,3 +138,24 @@ What I asked the chat (Claude) for, and what changed as I went.
 **Asked:** Change NOTES to LOGS.
 
 **What changed:** Renamed this file from `NOTES.md` to `LOGS.md` and updated the README to match.
+
+## 2026-10-09: Fix for two-word names
+
+**Asked:** How to add my last name.
+
+**What changed:** Found and fixed a bug before changing the name. With animations on, the space between a first and last name disappeared, and long names could break mid-word on phones. Letters are now grouped by word in `main.js`, so the name wraps between words.
+
+## 2026-10-09: Bug sweep
+
+**Asked:** Do more bug checks.
+
+**How it was tested:** Claude loaded the site in a test browser at 5 screen widths (320px phone to 1440px desktop), in light and dark mode, English and Spanish, with animations on and off (80 combinations). It also tested different card setups (in progress, finished with a link, nothing finished), the details pop-up, achievements, Copy buttons, keyboard-only use, the nav links, blocked browser storage, and the 404 page. Then it read through the code for problems that only show up on older browsers.
+
+**Bugs found and fixed**
+- **Blank page on older iPhones:** the email-wrapping code used a feature Safari only added in 2023, which would stop the whole script on older iPhones. Rewrote it so it works everywhere.
+- **Headings hidden under the nav on phones:** the nav wraps to two rows on phones, so jumping to a section put its heading underneath. The page now measures the nav's real height.
+- **Broken image icons:** a typo in a `cover` or `images` path showed a broken picture. Now a missing cover falls back to the generated art, and missing screenshots are skipped.
+- **See-through nav and pop-up on older browsers:** added solid fallback colors.
+- **Status typos:** `"Done"` or `" wip "` now work the same as `"done"` and `"wip"`. Anything unrecognized counts as an idea.
+
+**Passed with no changes needed:** no sideways scrolling at any width, nothing stuck invisible after scroll animations, everything reachable by keyboard, achievements show once and only for finished artifacts, the pop-up switches language while open, and the page works even when browser storage is blocked.

@@ -19,7 +19,7 @@
    ===================================================================== */
 
 const SITE = {
-  name: "John Nguyen",
+  name: "John",
 
   // The language shown when a visitor's browser language isn't listed.
   defaultLanguage: "en",
@@ -38,8 +38,8 @@ const SITE = {
 
   // One line under your name.
   role: {
-    en: "Senior CS student @ UWT · Future game developer (maybe)",
-    es: "Estudiante de último año de informática @ UWT · Futuro desarrollador de videojuegos (tal vez)"
+    en: "Senior CS student · future game developer",
+    es: "Estudiante de último año de informática · futuro desarrollador de videojuegos"
   },
 
   // What you're working on right now, shown next to the progress bar.
@@ -52,8 +52,8 @@ const SITE = {
   // ---------- About section ----------
 
   about: {
-    en: "Senior CS student who likes to make cool things. Looking in video game development currently.",
-    es: "Estudiante de último año de informática a quien le gusta crear cosas geniales. Actualmente explorando el desarrollo de videojuegos."
+    en: "Senior CS student who likes to make cool things. Someday I hope to become a video game developer.",
+    es: "Estudiante de último año de informática a quien le gusta crear cosas geniales. Algún día espero ser desarrollador de videojuegos."
   },
 
   // Languages and tools you use. These are starting guesses: add, remove,
@@ -72,8 +72,8 @@ const SITE = {
   // While all of them are empty, the section shows greyed-out
   // "Not linked yet" slots as a reminder.
   contact: {
-    email: "nguyenjohn922@gmail.com",      // e.g. "john@example.com"
-    github: "https://github.com/Danny-Defeato",     // e.g. "https://github.com/your-username"
+    email: "",      // e.g. "john@example.com"
+    github: "",     // e.g. "https://github.com/your-username"
     linkedin: "",   // e.g. "https://www.linkedin.com/in/your-name"
     itch: "",       // itch.io page for your games, e.g. "https://your-name.itch.io"
     discord: ""     // your Discord username, e.g. "john_dev"
@@ -119,7 +119,7 @@ const SITE = {
       backToTop: "Back to top",
       language: "Language",
       darkMode: "Dark mode",
-      footer: "Built with HTML, CSS and JavaScript."
+      footer: "Built by hand with HTML, CSS and JavaScript."
     },
     es: {
       eyebrow: "Portafolio",
