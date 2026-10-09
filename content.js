@@ -119,7 +119,7 @@ const SITE = {
       backToTop: "Back to top",
       language: "Language",
       darkMode: "Dark mode",
-      footer: "Built by hand with HTML, CSS and JavaScript."
+      footer: "Built with HTML, CSS and JavaScript."
     },
     es: {
       eyebrow: "Portafolio",
