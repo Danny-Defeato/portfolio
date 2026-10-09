@@ -18,10 +18,14 @@ Five things I'm building this quarter, one card each.
 | `styles.css` | Colors, fonts, layout | When you want a new look |
 | `index.html` | Page structure | Rarely |
 | `main.js` | Builds the page from `content.js` | Rarely |
-| `NOTES.md` | Build log for the class | Every work session |
+| `LOGS.md` | Build log for the class | Every work session |
 | `404.html` | Game Over page for broken links | Only to change `HOME` |
 | `favicon.svg`, `favicon.png`, `apple-touch-icon.png` | Browser tab and phone icons | Rarely |
 | `og-image.png` | Picture shown when your link is shared | Rarely |
+
+## Contact info
+
+Fill in `contact` in `content.js` (email, GitHub, LinkedIn, itch.io, Discord). Leave any you don't want public as `""`.
 
 ## After your first deploy
 

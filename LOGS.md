@@ -32,6 +32,12 @@ What I asked the chat (Claude) for, and what changed as I went.
 
 <!-- Add a new dated section each time you work on the site. -->
 
+## 2026-10-09: Name change
+
+**Asked:** Switch the name on the site from Joe to John.
+
+**What changed:** Updated the name in `content.js` (`name: "John"`), plus the page title and fallback heading in `index.html` and the README title.
+
 ## 2026-10-09: New layout inspired by other developer sites
 
 **Asked:** Change the layout using three developer portfolios as inspiration (benscott.dev, sawad.framer.website, aelradi.engineer).
@@ -112,3 +118,23 @@ What I asked the chat (Claude) for, and what changed as I went.
 **Asked:** Replace "Player profile" with "Portfolio".
 
 **What changed:** The small label above my name now says "Portfolio" ("Portafolio" in Spanish). It's the `eyebrow` line in `ui` in `content.js`. I re-rendered `og-image.png` so the social preview matches.
+
+## 2026-10-09: Contact section
+
+**Asked:** An area for contact info.
+
+**What changed**
+- The contact links used to hide until I filled them in. Now there's a full **Contact** section that's always on the page, with a "Let's connect" heading and a short message (`contactMessage` in `content.js`).
+- It has spots for **email, GitHub, LinkedIn, itch.io** (for games I publish), and **Discord**. Each one shows an icon and the address.
+- Email and Discord have **Copy** buttons, since a lot of people don't have an email app set up and Discord usernames aren't links.
+- Until I fill any of them in, it shows greyed-out "Not linked yet" slots for email, GitHub and LinkedIn as a reminder.
+- Long addresses wrap after the @ on phones instead of mid-word.
+
+**To do**
+- Fill in the `contact` fields in `content.js` with the ones I'm comfortable making public.
+
+## 2026-10-09: Renamed the log
+
+**Asked:** Change NOTES to LOGS.
+
+**What changed:** Renamed this file from `NOTES.md` to `LOGS.md` and updated the README to match.

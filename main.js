@@ -359,35 +359,128 @@
     list.parentElement.hidden = !(SITE.skills && SITE.skills.length);
   }
 
-  function renderContact() {
-    const list = document.getElementById("contact-links");
+  // Simple line icons for each kind of contact.
+  const CONTACT_ICONS = {
+    email: '<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/>',
+    github: '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',
+    linkedin: '<rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V5.5h6v2M3 12.5h18"/>',
+    itch: '<path d="M7 8.5h10a4 4 0 0 1 4 4v1a3 3 0 0 1-5.4 1.8L14.5 14h-5l-1.1 1.3A3 3 0 0 1 3 13.5v-1a4 4 0 0 1 4-4z"/><path d="M8 10.5v3M6.5 12h3"/><path d="M15.5 11.5h.01M17.5 13h.01"/>',
+    discord: '<path d="M4 5h16v11H10l-5 4v-4H4z"/><path d="M9 10.5h.01M15 10.5h.01"/>'
+  };
+
+  // Show a web address without the https:// part.
+  function shortUrl(url) {
+    return url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
+  }
+
+  // Copy text, with a fallback for browsers that block the clipboard.
+  function copyText(text, button, lang) {
+    function done() {
+      button.textContent = ui("copied", lang);
+      setTimeout(function () { button.textContent = ui("copy", lang); }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { selectFallback(button); });
+    } else {
+      selectFallback(button);
+    }
+  }
+
+  // If copying isn't allowed, select the text so the visitor can copy it.
+  function selectFallback(button) {
+    const value = button.parentElement.querySelector(".contact-value");
+    const range = document.createRange();
+    range.selectNodeContents(value);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function makeContactItem(kind, value, lang) {
+    const li = document.createElement("li");
+    li.className = "contact-item";
+
+    // Email, GitHub, LinkedIn and itch.io are links. Discord is just a
+    // username to copy, since there's no simple link to a profile.
+    let main;
+    if (kind === "discord") {
+      main = document.createElement("div");
+    } else {
+      main = document.createElement("a");
+      main.href = kind === "email" ? "mailto:" + value : value;
+      if (kind !== "email") {
+        main.target = "_blank";
+        main.rel = "noopener";
+      }
+    }
+    main.className = "contact-main";
+
+    const icon = document.createElement("span");
+    icon.className = "contact-icon";
+    icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + CONTACT_ICONS[kind] + "</svg>";
+
+    const text = document.createElement("span");
+    text.className = "contact-text";
+    const label = document.createElement("small");
+    label.textContent = ui(kind, lang);
+    const shown = document.createElement("span");
+    shown.className = "contact-value";
+    const display = kind === "email" || kind === "discord" ? value : shortUrl(value);
+    // On narrow screens, long addresses wrap after the @ or a slash
+    // instead of in the middle of a word.
+    display.split(/(?<=[@\/])/).forEach(function (part, i) {
+      if (i > 0) shown.append(document.createElement("wbr"));
+      shown.append(part);
+    });
+    text.append(label, shown);
+
+    main.append(icon, text);
+    li.append(main);
+
+    // Email and Discord get a Copy button.
+    if (kind === "email" || kind === "discord") {
+      const copy = document.createElement("button");
+      copy.type = "button";
+      copy.className = "copy-btn";
+      copy.textContent = ui("copy", lang);
+      copy.setAttribute("aria-label", ui("copy", lang) + " " + ui(kind, lang));
+      copy.addEventListener("click", function () { copyText(value, copy, lang); });
+      li.append(copy);
+    }
+
+    return li;
+  }
+
+  function renderContact(lang) {
+    setText("contact-heading", ui("contactHeading", lang));
+    setText("contact-title", ui("contactTitle", lang));
+    const message = t(SITE.contactMessage, lang);
+    setText("contact-message", message);
+    document.getElementById("contact-message").hidden = !message;
+
+    const list = document.getElementById("contact-list");
     list.replaceChildren();
     const contact = SITE.contact || {};
+    const kinds = ["email", "github", "linkedin", "itch", "discord"];
 
-    if (contact.github) {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = contact.github;
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.textContent = "GitHub";
-      li.append(a);
-      list.append(li);
-    }
-    if (contact.email) {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = "mailto:" + contact.email;
-      a.textContent = contact.email;
-      li.append(a);
-      list.append(li);
-    }
+    kinds.forEach(function (kind) {
+      if (contact[kind]) list.append(makeContactItem(kind, contact[kind], lang));
+    });
 
-    // Hide the heading and list until you add at least one way to reach you.
-    const empty = list.children.length === 0;
-    list.hidden = empty;
-    document.getElementById("contact-heading").hidden = empty;
-    document.getElementById("nav-contact").hidden = empty;
+    // Nothing filled in yet: show greyed-out slots as a reminder.
+    if (list.children.length === 0) {
+      ["email", "github", "linkedin"].forEach(function (kind) {
+        const li = document.createElement("li");
+        li.className = "contact-item is-empty";
+        li.innerHTML =
+          '<div class="contact-main"><span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          CONTACT_ICONS[kind] +
+          '</svg></span><span class="contact-text"><small></small><span class="contact-value"></span></span></div>';
+        li.querySelector("small").textContent = ui(kind, lang);
+        li.querySelector(".contact-value").textContent = ui("notLinked", lang);
+        list.append(li);
+      });
+    }
   }
 
   // ---------- Language and theme buttons ----------
@@ -491,11 +584,10 @@
     setText("artifacts-heading", ui("artifactsHeading", lang));
     renderCards(lang);
 
-    // Contact footer
-    setText("contact-heading", ui("contactHeading", lang));
+    // Contact section and footer
+    renderContact(lang);
     setText("footer-text", ui("footer", lang));
     setText("back-to-top", ui("backToTop", lang) + " ↑");
-    renderContact();
 
     makeLanguageButtons(lang);
 
@@ -518,7 +610,7 @@
 
   // Section headings and blocks that pop in as you scroll.
   document
-    .querySelectorAll(".section > h2, .about-body, .foot-row")
+    .querySelectorAll(".section > h2, .about-body, .contact-panel, .foot-row")
     .forEach(function (el) { el.dataset.reveal = ""; });
 
   setupThemeToggle();

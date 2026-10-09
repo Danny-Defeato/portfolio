@@ -60,11 +60,23 @@ const SITE = {
   // or reorder them. Tool names usually don't need translating.
   skills: ["Java", "SQL", "HTML", "CSS", "JavaScript", "Git"],
 
-  // ---------- Contact footer ----------
-  // Fill these in to show them. Leave as "" to hide.
+  // ---------- Contact section ----------
+  // A short line inviting people to reach out.
+  contactMessage: {
+    en: "Want to talk about games, code, or one of my projects? Reach out.",
+    es: "¿Quieres hablar de videojuegos, programación o alguno de mis proyectos? Escríbeme."
+  },
+
+  // Fill in the ones you want to show; leave the rest as "".
+  // Only add things you're fine with anyone on the internet seeing.
+  // While all of them are empty, the section shows greyed-out
+  // "Not linked yet" slots as a reminder.
   contact: {
-    github: "",   // e.g. "https://github.com/your-username"
-    email: ""     // e.g. "john@example.com"
+    email: "",      // e.g. "john@example.com"
+    github: "",     // e.g. "https://github.com/your-username"
+    linkedin: "",   // e.g. "https://www.linkedin.com/in/your-name"
+    itch: "",       // itch.io page for your games, e.g. "https://your-name.itch.io"
+    discord: ""     // your Discord username, e.g. "john_dev"
   },
 
   // ---------- Small pieces of interface text ----------
@@ -94,7 +106,16 @@ const SITE = {
       achievement: "Achievement unlocked",
       achievementText: "Checked out {title}",
       xp: "+100 XP",
-      contactHeading: "Say hi",
+      contactHeading: "Contact",
+      contactTitle: "Let's connect",
+      email: "Email",
+      github: "GitHub",
+      linkedin: "LinkedIn",
+      itch: "itch.io",
+      discord: "Discord",
+      copy: "Copy",
+      copied: "Copied!",
+      notLinked: "Not linked yet",
       backToTop: "Back to top",
       language: "Language",
       darkMode: "Dark mode",
@@ -124,7 +145,16 @@ const SITE = {
       achievement: "Logro desbloqueado",
       achievementText: "Viste {title}",
       xp: "+100 XP",
-      contactHeading: "Saludos",
+      contactHeading: "Contacto",
+      contactTitle: "Hablemos",
+      email: "Correo",
+      github: "GitHub",
+      linkedin: "LinkedIn",
+      itch: "itch.io",
+      discord: "Discord",
+      copy: "Copiar",
+      copied: "¡Copiado!",
+      notLinked: "Sin enlazar todavía",
       backToTop: "Volver arriba",
       language: "Idioma",
       darkMode: "Modo oscuro",
