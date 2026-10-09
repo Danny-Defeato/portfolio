@@ -1,0 +1,204 @@
+/* =====================================================================
+   styles.css: the "Bold Blocks" look.
+   Change the colors here (the --tokens) and the whole site follows.
+   ===================================================================== */
+
+:root {
+  --bg: #fff6ec;          /* page background, warm off-white */
+  --ink: #1b1430;         /* text, borders and shadows */
+  --ink-soft: #4a4160;    /* secondary text */
+
+  /* Card colors. Cards cycle through these in order. */
+  --card-1: #ffcf3f;
+  --card-2: #7fd3c4;
+  --card-3: #ff9aa8;
+  --card-4: #a9b8ff;
+  --card-5: #c6e87a;
+
+  --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --border: 2.5px solid var(--ink);
+  --shadow: 5px 5px 0 var(--ink);
+  --radius: 16px;
+
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 28px 48px;
+  display: grid;
+  gap: 48px;
+}
+
+/* ---------- Header ---------- */
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.lang-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.lang-switch button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--bg);
+  border: var(--border);
+  border-radius: 999px;
+  padding: 4px 14px;
+  cursor: pointer;
+}
+
+.lang-switch button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.hero {
+  display: grid;
+  gap: 12px;
+  max-width: 34ch;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 9vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.hero h1 .greeting {
+  display: block;
+  font-size: 0.45em;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+}
+
+.hero p {
+  margin: 0;
+  font-size: 1.2rem;
+  max-width: 40ch;
+}
+
+/* ---------- Cards ---------- */
+
+.artifacts {
+  display: grid;
+  gap: 20px;
+}
+
+.artifacts h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px 18px;
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  min-width: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:nth-child(5n + 1) { background: var(--card-1); }
+.card:nth-child(5n + 2) { background: var(--card-2); }
+.card:nth-child(5n + 3) { background: var(--card-3); }
+.card:nth-child(5n + 4) { background: var(--card-4); }
+.card:nth-child(5n + 5) { background: var(--card-5); }
+
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.card .tag {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Idea cards get a dashed border so visitors can tell plans from finished work. */
+.card[data-status="idea"] { border-style: dashed; }
+
+.card h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.card .reflection {
+  margin: 0;
+  font-size: 0.98rem;
+  overflow-wrap: anywhere;
+}
+
+.card-link {
+  margin-top: auto;
+  padding-top: 8px;
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Footer ---------- */
+
+.foot {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* ---------- Accessibility ---------- */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+  .card:hover { transform: none; box-shadow: var(--shadow); }
+}
