@@ -31,9 +31,3 @@ What I asked the chat (Claude) for, and what changed as I went.
 - Deploy to GitHub Pages.
 
 <!-- Add a new dated section each time you work on the site. -->
-
-## 2026-10-09: Name change
-
-**Asked:** Switch the name on the site from Joe to John.
-
-**What changed:** Updated the name in `content.js` (`name: "John"`), plus the page title and fallback heading in `index.html` and the README title.
