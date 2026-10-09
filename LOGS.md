@@ -32,12 +32,6 @@ What I asked the chat (Claude) for, and what changed as I went.
 
 <!-- Add a new dated section each time you work on the site. -->
 
-## 2026-10-09: Name change
-
-**Asked:** Switch the name on the site from Joe to John.
-
-**What changed:** Updated the name in `content.js` (`name: "John"`), plus the page title and fallback heading in `index.html` and the README title.
-
 ## 2026-10-09: New layout inspired by other developer sites
 
 **Asked:** Change the layout using three developer portfolios as inspiration (benscott.dev, sawad.framer.website, aelradi.engineer).
