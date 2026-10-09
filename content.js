@@ -19,7 +19,7 @@
    ===================================================================== */
 
 const SITE = {
-  name: "John",
+  name: "John Nguyen",
 
   // The language shown when a visitor's browser language isn't listed.
   defaultLanguage: "en",
@@ -38,8 +38,8 @@ const SITE = {
 
   // One line under your name.
   role: {
-    en: "Senior CS student · future game developer",
-    es: "Estudiante de último año de informática · futuro desarrollador de videojuegos"
+    en: "Senior CS student @ UWT · Future game developer (maybe)",
+    es: "Estudiante de último año de informática @ UWT · Futuro desarrollador de videojuegos (tal vez)"
   },
 
   // What you're working on right now, shown next to the progress bar.
@@ -52,8 +52,8 @@ const SITE = {
   // ---------- About section ----------
 
   about: {
-    en: "Senior CS student who likes to make cool things. Someday I hope to become a video game developer.",
-    es: "Estudiante de último año de informática a quien le gusta crear cosas geniales. Algún día espero ser desarrollador de videojuegos."
+    en: "Senior CS student who likes to make cool things. Looking in video game development currently.",
+    es: "Estudiante de último año de informática a quien le gusta crear cosas geniales. Actualmente explorando el desarrollo de videojuegos."
   },
 
   // Languages and tools you use. These are starting guesses: add, remove,
