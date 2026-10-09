@@ -1,204 +1,819 @@
 /* =====================================================================
-   styles.css: the "Bold Blocks" look.
+   styles.css: the "Game Launcher" look.
    Change the colors here (the --tokens) and the whole site follows.
    ===================================================================== */
 
+/* Dark mode is the main look. */
 :root {
-  --bg: #fff6ec;          /* page background, warm off-white */
-  --ink: #1b1430;         /* text, borders and shadows */
-  --ink-soft: #4a4160;    /* secondary text */
+  --bg: #10141f;          /* page background */
+  --surface: #1a2030;     /* cards and panels */
+  --surface-2: #232b40;   /* chips, buttons, inner panels */
+  --line: #ffffff17;      /* thin outlines */
+  --text: #e9edf7;        /* main text */
+  --muted: #9aa5c2;       /* secondary text */
 
-  /* Card colors. Cards cycle through these in order. */
-  --card-1: #ffcf3f;
-  --card-2: #7fd3c4;
-  --card-3: #ff9aa8;
-  --card-4: #a9b8ff;
-  --card-5: #c6e87a;
+  --accent: #c64bff;      /* purple: hover glow, highlights */
+  --accent-2: #3f6bff;    /* blue */
+  --hot: #ff7a59;         /* orange */
+  --mint: #7dffb3;        /* green: progress bar, NEW! sticker */
+  --gold: #ffd36e;        /* yellow: WIP sticker, medal */
+  --on-bright: #10141f;   /* text on mint/gold/white */
 
-  --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --border: 2.5px solid var(--ink);
-  --shadow: 5px 5px 0 var(--ink);
+  --glow: 0 0 0 2px var(--accent), 0 16px 34px -12px #c64bffaa;
   --radius: 16px;
+  --nav-height: 64px;
+  --font: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
 
+  color-scheme: dark;
+}
+
+/* Light mode: a "daytime launcher". The toggle sets data-theme="light". */
+:root[data-theme="light"] {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --surface-2: #eaeef7;
+  --line: #10141f1c;
+  --text: #141a2b;
+  --muted: #56607a;
+  --accent: #a12fe6;
+  --glow: 0 0 0 2px var(--accent), 0 16px 30px -14px #a12fe680;
   color-scheme: light;
 }
 
 * { box-sizing: border-box; }
 
+/* Make sure anything the script hides stays hidden, even with display rules below. */
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--ink);
+  background-image: radial-gradient(ellipse 80% 50% at 85% -10%, #6a3cc233, transparent 70%);
+  background-repeat: no-repeat;
+  color: var(--text);
   font-family: var(--font);
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-.page {
-  max-width: 1000px;
+/* Keep section headings from hiding under the sticky nav after a jump. */
+[id] { scroll-margin-top: calc(var(--nav-height) + 16px); }
+
+a { color: inherit; }
+
+/* ---------- Top nav bar ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar-inner {
+  max-width: 1100px;
   margin: 0 auto;
   padding-inline: 20px;
-  padding-block: 28px 48px;
-  display: grid;
-  gap: 48px;
-}
-
-/* ---------- Header ---------- */
-
-.top {
+  padding-block: 12px;
+  min-height: var(--nav-height);
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  align-items: center;
+  gap: 10px 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.brand img { border-radius: 7px; }
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
 }
 
 .lang-switch {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-left: auto;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-2);
 }
 
 .lang-switch button {
   font: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--ink);
-  background: var(--bg);
-  border: var(--border);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
   border-radius: 999px;
-  padding: 4px 14px;
+  padding: 4px 12px;
   cursor: pointer;
 }
 
 .lang-switch button[aria-pressed="true"] {
-  background: var(--ink);
+  background: var(--text);
   color: var(--bg);
 }
 
-.hero {
+/* Dark mode button: shows a sun in dark mode and a moon in light mode. */
+.theme-toggle {
   display: grid;
-  gap: 12px;
-  max-width: 34ch;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
-.hero h1 {
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+
+/* ---------- Page ---------- */
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 28px 48px;
+  display: grid;
+  gap: 64px;
+}
+
+main {
+  display: grid;
+  gap: 64px;
+}
+
+.section {
+  display: grid;
+  gap: 20px;
+}
+
+.section h2 {
   margin: 0;
-  font-size: clamp(2.6rem, 9vw, 4.5rem);
+  font-size: 1.5rem;
   font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 
-.hero h1 .greeting {
-  display: block;
-  font-size: 0.45em;
-  font-weight: 500;
-  letter-spacing: 0;
-  color: var(--ink-soft);
+.panel {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 0 0 1px var(--line);
 }
 
-.hero p {
+/* ---------- Profile banner ---------- */
+
+.banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 320px;
+  padding: 32px clamp(20px, 4vw, 40px);
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: 8px;
+  color: #ffffff;
+  background:
+    linear-gradient(0deg, #0c0f19f0 0%, #0c0f1900 75%),
+    linear-gradient(120deg, var(--hot), #c64bff 50%, var(--accent-2));
+}
+
+/* Floating shapes in the banner, like key art behind a game title. */
+.banner-art span {
+  position: absolute;
+  border-radius: 36px;
+  background: #ffffff1f;
+  transform: rotate(25deg);
+}
+.banner-art span:nth-child(1) { width: 220px; height: 220px; right: -40px; top: -60px; }
+.banner-art span:nth-child(2) { width: 120px; height: 120px; right: 190px; top: 30px; border-radius: 50%; background: #ffd36e40; }
+.banner-art span:nth-child(3) { width: 90px; height: 90px; right: 90px; top: 170px; background: #7dffb333; }
+
+.banner > * { position: relative; }
+
+.eyebrow {
   margin: 0;
-  font-size: 1.2rem;
-  max-width: 40ch;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffd8cc;
+}
+
+.banner h1 {
+  margin: 0;
+  font-size: clamp(3rem, 11vw, 5.8rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.role {
+  margin: 0;
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  color: #e3e6f2;
+  max-width: 48ch;
+}
+
+.banner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  margin-top: 14px;
+}
+
+/* The big white "play" button style, used for Continue and Open it. */
+.play {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #10141f;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.play svg { width: 16px; height: 16px; }
+.play:hover { box-shadow: 0 8px 24px -8px #ffffffaa; }
+
+.xp {
+  display: grid;
+  gap: 6px;
+  min-width: min(100%, 240px);
+}
+
+.xp-now, .xp-count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #e3e6f2;
+}
+
+.xp-now span:first-child { font-weight: 800; }
+.xp-count { font-variant-numeric: tabular-nums; }
+
+.xp-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: #ffffff33;
+  overflow: hidden;
+}
+
+.xp-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: var(--mint);
+  transition: width 0.8s ease;
+}
+
+/* ---------- About ---------- */
+
+.about-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 24px 48px;
+  align-items: start;
+  padding: 24px 26px;
+}
+
+.about-body > p {
+  margin: 0;
+  font-size: 1.12rem;
+  max-width: 48ch;
+}
+
+.skills h3 {
+  margin: 0 0 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chips li {
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: var(--surface-2);
 }
 
 /* ---------- Cards ---------- */
 
-.artifacts {
-  display: grid;
-  gap: 20px;
-}
-
-.artifacts h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 800;
-  text-wrap: balance;
-}
+#featured:empty { display: none; }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
   gap: 20px;
 }
 
 .card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+  min-width: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glow);
+}
+
+/* Cover art. Each card gets its own generated art unless it has a screenshot. */
+.card-art,
+.art {
+  position: relative;
+  height: 128px;
+  flex: none;
+  overflow: hidden;
+}
+
+.card-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, var(--surface), transparent 60%);
+}
+
+.card-art img,
+.art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+[data-art="1"] { background: radial-gradient(circle at 28% 42%, #ffd36e 0 16%, transparent 17%), radial-gradient(circle at 80% 20%, #ffffff33 0 8%, transparent 9%), linear-gradient(135deg, #ff7a59, #c64bff); }
+[data-art="2"] { background: radial-gradient(circle at 72% 32%, #7dffb3 0 13%, transparent 14%), linear-gradient(160deg, transparent 55%, #ffffff22 55% 62%, transparent 62%), linear-gradient(135deg, #1f9bd1, #2b3fa8); }
+[data-art="3"] { background: repeating-linear-gradient(45deg, #ffffff18 0 10px, transparent 10px 20px), linear-gradient(135deg, #ff5f8f, #7a3cff); }
+[data-art="4"] { background: linear-gradient(#ffffff14 1px, transparent 1px) 0 0 / 18px 18px, linear-gradient(90deg, #ffffff14 1px, transparent 1px) 0 0 / 18px 18px, radial-gradient(circle at 30% 70%, #ffd36e88 0 12%, transparent 13%), linear-gradient(135deg, #12b5a5, #3f6bff); }
+[data-art="5"] { background: linear-gradient(120deg, transparent 40%, #ffffff26 40% 52%, transparent 52%), radial-gradient(circle at 75% 60%, #10141f55 0 18%, transparent 19%), linear-gradient(135deg, #ffd36e, #ff7a59); }
+
+/* Ideas look greyed out, like games you don't own yet. */
+.card[data-status="idea"] .card-art { filter: grayscale(0.9) brightness(0.75); transition: filter 0.3s ease; }
+.card[data-status="idea"]:hover .card-art { filter: grayscale(0.3) brightness(0.9); }
+
+.card-body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 16px 18px 18px;
-  border: var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  min-width: 0;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  padding: 4px 18px 18px;
+  flex: 1;
 }
 
-.card:nth-child(5n + 1) { background: var(--card-1); }
-.card:nth-child(5n + 2) { background: var(--card-2); }
-.card:nth-child(5n + 3) { background: var(--card-3); }
-.card:nth-child(5n + 4) { background: var(--card-4); }
-.card:nth-child(5n + 5) { background: var(--card-5); }
-
-.card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 var(--ink);
-}
-
-.card .tag {
+.tag {
   margin: 0;
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  color: var(--muted);
 }
-
-/* Idea cards get a dashed border so visitors can tell plans from finished work. */
-.card[data-status="idea"] { border-style: dashed; }
 
 .card h3 {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
-.card .reflection {
+/* The title button. Its ::after stretches over the whole card so
+   clicking anywhere on the card opens the details. */
+.card-open {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card-open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius);
+}
+
+.card-open:focus-visible { outline: none; }
+.card-open:focus-visible::after { outline: 3px solid var(--accent); outline-offset: -3px; }
+
+.reflection {
   margin: 0;
-  font-size: 0.98rem;
+  font-size: 0.92rem;
+  color: var(--muted);
   overflow-wrap: anywhere;
 }
 
-.card-link {
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
   margin-top: auto;
-  padding-top: 8px;
-  color: var(--ink);
-  font-weight: 800;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
+  padding-top: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-/* ---------- Footer ---------- */
+.card-more { color: var(--accent); }
 
-.foot {
-  color: var(--ink-soft);
-  font-size: 0.9rem;
+/* Sits above the stretched title button so it stays clickable. */
+.card-link {
+  position: relative;
+  z-index: 2;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  text-decoration: none;
+}
+
+.card-link:hover { background: var(--text); color: var(--bg); }
+
+/* Stickers */
+.sticker {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  pointer-events: none;
+  padding: 3px 10px;
+  border-radius: 7px;
+  background: var(--mint);
+  color: var(--on-bright);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  transform: rotate(4deg);
+  box-shadow: 0 4px 12px -4px #000000aa;
+}
+
+.sticker-wip { background: var(--gold); transform: rotate(-4deg); }
+
+/* The big "Latest" card. Side by side on wide screens. */
+.card-featured {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+}
+
+.card-featured .card-art {
+  height: auto;
+  min-height: 220px;
+}
+
+.card-featured .card-art::after {
+  background: linear-gradient(90deg, transparent 55%, var(--surface));
+}
+
+.card-featured .card-body {
+  padding: 28px 28px 26px;
+  justify-content: center;
+}
+
+.card-featured h3 {
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.card-featured .reflection {
+  font-size: 1.02rem;
+  max-width: 52ch;
+}
+
+@media (max-width: 720px) {
+  .card-featured .card-art::after { background: linear-gradient(0deg, var(--surface), transparent 60%); }
+  .card-featured .card-body { padding: 8px 20px 22px; }
+}
+
+/* ---------- Card details pop-up ---------- */
+
+.detail {
+  width: min(640px, calc(100% - 32px));
+  max-height: calc(100% - 48px);
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--line), 0 30px 80px -20px #000000cc;
+  overflow: auto;
+}
+
+.detail::backdrop {
+  background: #05080fb3;
+  backdrop-filter: blur(4px);
+}
+
+.detail-art .art { height: 190px; }
+
+.detail-body {
+  display: grid;
+  gap: 12px;
+  padding: 22px 26px 26px;
+}
+
+.detail-body h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.detail-text p { margin: 0 0 12px; max-width: 62ch; }
+.detail-text p:last-child { margin-bottom: 0; }
+
+.detail-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 10px;
+}
+
+.detail-images img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.ghost {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+:root[data-theme="light"] .detail .play { background: var(--text); color: var(--bg); }
+
+/* ---------- Achievement pop-up ---------- */
+
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 40px);
+  padding: 10px 18px 10px 10px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 1px var(--line), 0 18px 40px -14px #000000cc;
+  transform: translateY(calc(100% + 40px));
+  visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2), visibility 0s linear 0.45s;
+}
+
+.toast.show {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2), visibility 0s;
+}
+
+.medal {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--hot));
+  color: var(--on-bright);
+}
+
+.medal svg { width: 22px; height: 22px; }
+
+.toast-text { display: grid; min-width: 0; }
+
+.toast-text small {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.toast-text b { font-size: 0.95rem; overflow-wrap: anywhere; }
+
+.toast-xp {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--on-bright);
+  background: var(--mint);
+  border-radius: 6px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+/* ---------- Contact footer ---------- */
+
+.contact {
+  border-top: 1px solid var(--line);
+  padding-top: 32px;
+}
+
+.contact-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.contact-links a {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: box-shadow 0.2s ease;
+}
+
+.contact-links a:hover { box-shadow: var(--glow); }
+
+.foot-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.foot-row p { margin: 0; }
+.foot-row a { font-weight: 600; }
+
+/* ---------- Animations ----------
+   Everything below only runs when main.js adds the "motion" class to the
+   page, which it skips if `animations: false` is set in content.js or the
+   visitor's device asks for reduced motion. */
+
+:root { --ease-out: cubic-bezier(0.2, 0.9, 0.3, 1.15); }
+
+/* 1. Page load: the banner text rises in one line after another. */
+.motion .banner > :not(.banner-art) { animation: rise 0.7s var(--ease-out) backwards; }
+.motion .banner > :nth-child(3) { animation-delay: 0.08s; }
+.motion .banner > :nth-child(4) { animation-delay: 0.16s; }
+.motion .banner > :nth-child(5) { animation-delay: 0.24s; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+}
+
+/* 2. Banner shapes drift slowly, like animated key art on a game's title screen. */
+.motion .banner-art span { animation: drift 9s ease-in-out infinite alternate; }
+.motion .banner-art span:nth-child(2) { animation-duration: 7s; animation-delay: -2s; }
+.motion .banner-art span:nth-child(3) { animation-duration: 11s; animation-delay: -5s; }
+
+@keyframes drift {
+  to { transform: rotate(40deg) translate(14px, 18px); }
+}
+
+/* 3. Scroll: headings, the About panel and each card fade up as they appear.
+   Cards are staggered using --i (set in main.js). */
+.motion [data-reveal]:not(.in) { opacity: 0; }
+
+.motion [data-reveal].in {
+  animation: pop 0.6s var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+}
+
+/* 4. Name: hover over it and the letters hop in a wave. */
+.motion .name-letter { display: inline-block; }
+
+.motion .banner h1:hover .name-letter {
+  animation: hop 0.5s ease;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+@keyframes hop {
+  40% { transform: translateY(-0.15em); }
+}
+
+/* 5. Buttons and cards sink a little when pressed. */
+.motion .play:active,
+.motion .card:active { transform: scale(0.98); }
+
+/* 6. Details pop-up zooms in when it opens. */
+.motion .detail[open] { animation: zoom 0.3s var(--ease-out); }
+.motion .detail[open]::backdrop { animation: fade 0.3s ease; }
+
+@keyframes zoom {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+}
+@keyframes fade {
+  from { opacity: 0; }
+}
+
+/* 7. Light/dark switch: colors fade instead of snapping. */
+.motion body,
+.motion .topbar,
+.motion .panel,
+.motion .chips li {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ---------- Accessibility ---------- */
 
 a:focus-visible,
 button:focus-visible {
-  outline: 3px solid var(--ink);
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card { transition: none; }
-  .card:hover { transform: none; box-shadow: var(--shadow); }
+  html { scroll-behavior: auto; }
+  .card, .play, .xp-bar i, .toast { transition: none; }
+  .card:hover { transform: none; }
 }

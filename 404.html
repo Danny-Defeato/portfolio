@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Over · 404</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap">
+
+  <script>
+    /* GitHub Pages shows this page for any address that doesn't exist.
+       HOME is where "Continue" sends people. If your repo isn't named
+       "portfolio", change it to "/your-repo-name/". If your repo is named
+       "your-username.github.io", change it to "/". */
+    var HOME = "/portfolio/";
+
+    // Match the visitor's light/dark choice from the main site.
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem("portfolio-theme"); } catch (e) {}
+      if (theme !== "dark" && theme !== "light") {
+        theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      }
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+
+  <!-- This page keeps its styles inside the file, so it works no matter
+       which broken address someone typed. -->
+  <style>
+    :root {
+      --bg: #10141f; --surface: #1a2030; --line: #ffffff17;
+      --text: #e9edf7; --muted: #9aa5c2;
+      --hot: #ff7a59; --accent: #c64bff; --accent-2: #3f6bff; --mint: #7dffb3; --gold: #ffd36e;
+      color-scheme: dark;
+    }
+    :root[data-theme="light"] {
+      --bg: #f4f6fb; --surface: #ffffff; --line: #10141f1c;
+      --text: #141a2b; --muted: #56607a; --mint: #1fae6a;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px 20px;
+      background: var(--bg);
+      background-image: radial-gradient(ellipse 70% 50% at 50% 0%, #6a3cc244, transparent 70%);
+      color: var(--text);
+      font-family: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+      text-align: center;
+    }
+    main { display: grid; justify-items: center; gap: 14px; max-width: 560px; }
+    .code {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(3rem, 14vw, 6rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      background: linear-gradient(120deg, var(--hot), var(--accent) 50%, var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .msg { margin: 0; color: var(--muted); font-size: 1.05rem; }
+    .ring {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: grid;
+      place-items: center;
+      margin-block: 8px;
+    }
+    .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+    .ring circle { fill: none; stroke-width: 8; }
+    .ring .track { stroke: var(--line); }
+    .ring .fill { stroke: var(--mint); stroke-linecap: round; stroke-dasharray: 327; transition: stroke-dashoffset 1s linear; }
+    .count { font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .prompt { margin: 0; font-weight: 800; font-size: 1.2rem; letter-spacing: 0.02em; }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      border: 0;
+    }
+    .btn svg { width: 16px; height: 16px; }
+    .primary { background: var(--text); color: var(--bg); }
+    .secondary { background: var(--surface); color: var(--text); box-shadow: 0 0 0 1px var(--line); }
+    .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    @media (prefers-reduced-motion: no-preference) {
+      main > * { animation: rise 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.15) backwards; }
+      main > :nth-child(2) { animation-delay: 0.08s; }
+      main > :nth-child(3) { animation-delay: 0.16s; }
+      main > :nth-child(4) { animation-delay: 0.24s; }
+      @keyframes rise { from { opacity: 0; transform: translateY(20px); } }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="code" id="code">Error 404 · Page not found</p>
+    <h1 id="title">Game Over</h1>
+    <p class="msg" id="msg">This page doesn't exist, or it moved.</p>
+    <div class="ring" aria-hidden="true">
+      <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"/><circle class="fill" id="ring" cx="60" cy="60" r="52"/></svg>
+      <span class="count" id="count">10</span>
+    </div>
+    <p class="prompt" id="prompt">Continue?</p>
+    <div class="actions">
+      <a class="btn primary" id="yes" href="/portfolio/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+        <span id="yes-text">Yes, back to home</span>
+      </a>
+      <button class="btn secondary" type="button" id="wait">Wait</button>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var text = {
+        en: {
+          code: "Error 404 · Page not found",
+          title: "Game Over",
+          msg: "This page doesn't exist, or it moved.",
+          prompt: "Continue?",
+          yes: "Yes, back to home",
+          wait: "Wait",
+          waiting: "Paused",
+          going: "Returning to the title screen…"
+        },
+        es: {
+          code: "Error 404 · Página no encontrada",
+          title: "Game Over",
+          msg: "Esta página no existe o se movió.",
+          prompt: "¿Continuar?",
+          yes: "Sí, volver al inicio",
+          wait: "Espera",
+          waiting: "En pausa",
+          going: "Volviendo a la pantalla de inicio…"
+        }
+      };
+
+      var lang = null;
+      try { lang = localStorage.getItem("portfolio-lang"); } catch (e) {}
+      if (!text[lang]) lang = (navigator.language || "").slice(0, 2);
+      if (!text[lang]) lang = "en";
+      var s = text[lang];
+      document.documentElement.lang = lang;
+
+      document.getElementById("code").textContent = s.code;
+      document.getElementById("title").textContent = s.title;
+      document.getElementById("msg").textContent = s.msg;
+      document.getElementById("prompt").textContent = s.prompt;
+      document.getElementById("yes-text").textContent = s.yes;
+      var waitBtn = document.getElementById("wait");
+      waitBtn.textContent = s.wait;
+
+      var yes = document.getElementById("yes");
+      yes.href = HOME;
+
+      var icon = document.createElement("link");
+      icon.rel = "icon";
+      icon.type = "image/svg+xml";
+      icon.href = HOME + "favicon.svg";
+      document.head.appendChild(icon);
+
+      // Countdown from 10, like a game's continue screen. At 0 it goes home.
+      var total = 10;
+      var left = total;
+      var ring = document.getElementById("ring");
+      var count = document.getElementById("count");
+      var circumference = 327;
+
+      function draw() {
+        count.textContent = left;
+        ring.style.strokeDashoffset = String(circumference * (1 - left / total));
+      }
+      draw();
+
+      var timer = setInterval(function () {
+        left -= 1;
+        draw();
+        if (left <= 0) {
+          clearInterval(timer);
+          document.getElementById("prompt").textContent = s.going;
+          window.location.href = HOME;
+        }
+      }, 1000);
+
+      // "Wait" stops the countdown so nobody gets sent away while reading.
+      waitBtn.addEventListener("click", function () {
+        clearInterval(timer);
+        waitBtn.disabled = true;
+        waitBtn.textContent = s.waiting;
+      });
+    })();
+  </script>
+</body>
+</html>
