@@ -19,7 +19,7 @@
    ===================================================================== */
 
 const SITE = {
-  name: "John",
+  name: "John Nguyen",
 
   // The language shown when a visitor's browser language isn't listed.
   defaultLanguage: "en",
