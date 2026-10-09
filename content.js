@@ -72,8 +72,8 @@ const SITE = {
   // While all of them are empty, the section shows greyed-out
   // "Not linked yet" slots as a reminder.
   contact: {
-    email: "",      // e.g. "john@example.com"
-    github: "",     // e.g. "https://github.com/your-username"
+    email: "nguyenjohn922@gmail.com",      // e.g. "john@example.com"
+    github: "https://github.com/Danny-Defeato",     // e.g. "https://github.com/your-username"
     linkedin: "",   // e.g. "https://www.linkedin.com/in/your-name"
     itch: "",       // itch.io page for your games, e.g. "https://your-name.itch.io"
     discord: ""     // your Discord username, e.g. "john_dev"
