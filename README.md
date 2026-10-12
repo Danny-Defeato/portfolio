@@ -6,7 +6,7 @@ Five things I'm building this quarter, one card each.
 
 1. Open `content.js`.
 2. Find the card by its `number`.
-3. Set `status` to `"wip"` while you build it and `"done"` when it's finished. Put the artifact's URL in `link`, and write the `title` and `reflection` (in each language you support).
+3. Set `status` to `"wip"` while you build it and `"done"` when it's finished. Put the artifact's URL in `link`, and write the `title` and `reflection`.
 4. Optional: add a screenshot as `cover`, a longer write-up as `details`, and more screenshots in `images`. Put image files in an `images` folder.
 5. Commit and push (or upload the file on GitHub). The live site updates in about a minute.
 
@@ -14,7 +14,7 @@ Five things I'm building this quarter, one card each.
 
 | File | What it does | Edit it? |
 | --- | --- | --- |
-| `content.js` | All text: role, Now badge, about me, skills, contact links, cards, translations | Yes, often |
+| `content.js` | All text: role, Now badge, about me, skills, contact links and cards | Yes, often |
 | `styles.css` | Colors, fonts, layout | When you want a new look |
 | `index.html` | Page structure | Rarely |
 | `main.js` | Builds the page from `content.js` | Rarely |

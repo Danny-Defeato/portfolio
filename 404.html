@@ -136,43 +136,7 @@
 
   <script>
     (function () {
-      var text = {
-        en: {
-          code: "Error 404 · Page not found",
-          title: "Game Over",
-          msg: "This page doesn't exist, or it moved.",
-          prompt: "Continue?",
-          yes: "Yes, back to home",
-          wait: "Wait",
-          waiting: "Paused",
-          going: "Returning to the title screen…"
-        },
-        es: {
-          code: "Error 404 · Página no encontrada",
-          title: "Game Over",
-          msg: "Esta página no existe o se movió.",
-          prompt: "¿Continuar?",
-          yes: "Sí, volver al inicio",
-          wait: "Espera",
-          waiting: "En pausa",
-          going: "Volviendo a la pantalla de inicio…"
-        }
-      };
-
-      var lang = null;
-      try { lang = localStorage.getItem("portfolio-lang"); } catch (e) {}
-      if (!text[lang]) lang = (navigator.language || "").slice(0, 2);
-      if (!text[lang]) lang = "en";
-      var s = text[lang];
-      document.documentElement.lang = lang;
-
-      document.getElementById("code").textContent = s.code;
-      document.getElementById("title").textContent = s.title;
-      document.getElementById("msg").textContent = s.msg;
-      document.getElementById("prompt").textContent = s.prompt;
-      document.getElementById("yes-text").textContent = s.yes;
       var waitBtn = document.getElementById("wait");
-      waitBtn.textContent = s.wait;
 
       var yes = document.getElementById("yes");
       yes.href = HOME;
@@ -201,7 +165,7 @@
         draw();
         if (left <= 0) {
           clearInterval(timer);
-          document.getElementById("prompt").textContent = s.going;
+          document.getElementById("prompt").textContent = "Returning to the title screen…";
           window.location.href = HOME;
         }
       }, 1000);
@@ -210,7 +174,7 @@
       waitBtn.addEventListener("click", function () {
         clearInterval(timer);
         waitBtn.disabled = true;
-        waitBtn.textContent = s.waiting;
+        waitBtn.textContent = "Paused";
       });
     })();
   </script>

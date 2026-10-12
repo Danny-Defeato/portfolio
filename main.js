@@ -4,7 +4,6 @@
    ===================================================================== */
 
 (function () {
-  const STORAGE_KEY = "portfolio-lang";
   const THEME_KEY = "portfolio-theme";
   const ACHIEVEMENTS_KEY = "portfolio-achievements";
 
@@ -14,8 +13,6 @@
     SITE.animations !== false &&
     !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-  let firstRender = true;
-  let currentLang = SITE.defaultLanguage;
   let openCardNumber = null;
 
   // ---------- Small helpers ----------
@@ -28,44 +25,24 @@
     try { localStorage.setItem(key, value); } catch (e) {}
   }
 
-  // Decide which language to show, in this order:
-  // 1. ?lang=es in the URL   2. the visitor's last choice
-  // 3. the browser's language   4. SITE.defaultLanguage
-  function pickLanguage() {
-    const fromUrl = new URLSearchParams(window.location.search).get("lang");
-    if (fromUrl && SITE.languages[fromUrl]) return fromUrl;
-
-    const saved = load(STORAGE_KEY);
-    if (saved && SITE.languages[saved]) return saved;
-
-    const browser = (navigator.language || "").slice(0, 2);
-    if (SITE.languages[browser]) return browser;
-
-    return SITE.defaultLanguage;
+  // Turn any value from content.js into text ("" if it's missing).
+  function text(value) {
+    return value == null ? "" : String(value);
   }
 
-  // Get the text for one language, falling back to the default language.
-  function t(value, lang) {
-    if (value == null) return "";
-    if (typeof value === "string") return value;
-    return value[lang] || value[SITE.defaultLanguage] || "";
-  }
-
-  // Look up a piece of interface text, filling in {placeholders}.
-  function ui(key, lang, fill) {
-    const strings = SITE.ui[lang] || {};
-    const fallback = SITE.ui[SITE.defaultLanguage] || {};
-    let text = strings[key] || fallback[key] || "";
+  // Look up a piece of interface text from SITE.ui, filling in {placeholders}.
+  function ui(key, fill) {
+    let result = text((SITE.ui || {})[key]);
     Object.keys(fill || {}).forEach(function (name) {
-      text = text.split("{" + name + "}").join(fill[name]);
+      result = result.split("{" + name + "}").join(fill[name]);
     });
-    return text;
+    return result;
   }
 
   // Put text into the element with this id.
-  function setText(id, text) {
+  function setText(id, value) {
     const el = document.getElementById(id);
-    if (el) el.textContent = text;
+    if (el) el.textContent = value;
   }
 
   // Forgive small typos in a card's status ("Done", " wip ").
@@ -79,6 +56,17 @@
     return SITE.cards.slice().sort(function (a, b) { return a.number - b.number; });
   }
 
+  // The finished card with the highest number.
+  function latestDone() {
+    const done = sortedCards().filter(function (c) { return c.status === "done"; });
+    return done.length ? done[done.length - 1] : null;
+  }
+
+  // Links to other websites open in a new tab so the visitor can come back.
+  function isExternal(link) {
+    return /^https?:\/\//i.test(link);
+  }
+
   // The nav bar wraps to two rows on phones. Keep track of its real
   // height so jumping to a section never hides the heading under it.
   function trackNavHeight() {
@@ -89,17 +77,6 @@
     update();
     window.addEventListener("resize", update);
     if ("ResizeObserver" in window) new ResizeObserver(update).observe(nav);
-  }
-
-  // The finished card with the highest number.
-  function latestDone() {
-    const done = sortedCards().filter(function (c) { return c.status === "done"; });
-    return done.length ? done[done.length - 1] : null;
-  }
-
-  // Links to other websites open in a new tab so the visitor can come back.
-  function isExternal(link) {
-    return /^https?:\/\//i.test(link);
   }
 
   // ---------- Cover art ----------
@@ -156,41 +133,41 @@
 
   // ---------- Progress bar ----------
 
-  function renderProgress(lang) {
+  function renderProgress() {
     const total = SITE.cards.length;
     const done = SITE.cards.filter(function (c) { return c.status === "done"; }).length;
     const bar = document.getElementById("xp-bar");
     document.getElementById("xp-fill").style.width = (total ? (done / total) * 100 : 0) + "%";
     bar.setAttribute("aria-valuemax", String(total));
     bar.setAttribute("aria-valuenow", String(done));
-    const label = ui("progress", lang, { done: done, total: total });
+    const label = ui("progress", { done: done, total: total });
     bar.setAttribute("aria-label", label);
     setText("xp-count", label);
 
-    const nowText = t(SITE.now, lang);
-    setText("now-label", ui("nowLabel", lang));
+    const nowText = text(SITE.now);
+    setText("now-label", ui("nowLabel"));
     setText("now-text", nowText);
     document.getElementById("now").hidden = !nowText;
 
     // "Continue" jumps to your latest finished artifact.
     document.getElementById("continue").href = latestDone() ? "#featured" : "#artifacts";
-    setText("continue-text", ui("continue", lang));
+    setText("continue-text", ui("continue"));
   }
 
   // ---------- Achievements ----------
 
   let toastTimer = null;
 
-  function showToast(title, lang) {
+  function showToast(title) {
     const toast = document.getElementById("toast");
     // When the details pop-up is open it covers the whole page, so the
     // toast moves inside it to stay visible on top.
     const dialog = document.getElementById("detail");
     if (dialog.open) dialog.append(toast);
     else if (toast.parentElement !== document.body) document.body.append(toast);
-    setText("toast-label", ui("achievement", lang));
-    setText("toast-title", ui("achievementText", lang, { title: title }));
-    setText("toast-xp", ui("xp", lang));
+    setText("toast-label", ui("achievement"));
+    setText("toast-title", ui("achievementText", { title: title }));
+    setText("toast-xp", ui("xp"));
     toast.classList.add("show");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 3400);
@@ -204,28 +181,28 @@
     if (unlocked.indexOf(card.number) !== -1) return;
     unlocked.push(card.number);
     save(ACHIEVEMENTS_KEY, JSON.stringify(unlocked));
-    showToast(t(card.title, currentLang), currentLang);
+    showToast(text(card.title));
   }
 
   // ---------- Card details pop-up ----------
 
-  function cardTag(card, lang, featured) {
-    let text = ui("artifact", lang) + " " + card.number + " · " + ui(card.status, lang);
-    if (featured) text = ui("latest", lang) + " · " + text;
-    return text;
+  function cardTag(card, featured) {
+    let tag = ui("artifact") + " " + card.number + " · " + ui(card.status);
+    if (featured) tag = ui("latest") + " · " + tag;
+    return tag;
   }
 
-  function fillDetail(card, lang) {
+  function fillDetail(card) {
     const art = document.getElementById("detail-art");
     art.replaceChildren(makeArt(card, "art"));
 
-    setText("detail-tag", cardTag(card, lang, false));
-    setText("detail-title", t(card.title, lang));
+    setText("detail-tag", cardTag(card, false));
+    setText("detail-title", text(card.title));
 
     // Blank lines in the details text start new paragraphs.
     const textBox = document.getElementById("detail-text");
     textBox.replaceChildren();
-    const longText = t(card.details, lang) || t(card.reflection, lang);
+    const longText = text(card.details) || text(card.reflection);
     longText.split(/\n\s*\n/).forEach(function (para) {
       const p = document.createElement("p");
       p.textContent = para.trim();
@@ -236,7 +213,7 @@
     images.replaceChildren();
     (card.images || []).forEach(function (src, i) {
       const img = document.createElement("img");
-      img.alt = t(card.title, lang) + " screenshot " + (i + 1);
+      img.alt = text(card.title) + " screenshot " + (i + 1);
       // Skip screenshots that can't be found instead of showing a broken image.
       img.addEventListener("error", function () {
         img.remove();
@@ -251,7 +228,7 @@
     link.hidden = !card.link;
     if (card.link) {
       link.href = card.link;
-      link.textContent = ui("open", lang) + " ↗";
+      link.textContent = ui("open") + " ↗";
       if (isExternal(card.link)) {
         link.target = "_blank";
         link.rel = "noopener";
@@ -259,13 +236,13 @@
         link.removeAttribute("target");
       }
     }
-    setText("detail-close", ui("close", currentLang));
+    setText("detail-close", ui("close"));
   }
 
   function openDetail(card) {
     const dialog = document.getElementById("detail");
     openCardNumber = card.number;
-    fillDetail(card, currentLang);
+    fillDetail(card);
     if (typeof dialog.showModal === "function") {
       if (!dialog.open) dialog.showModal();
     } else {
@@ -301,7 +278,7 @@
 
   // ---------- Cards ----------
 
-  function makeCard(card, lang, featured, index) {
+  function makeCard(card, featured, index) {
     const article = document.createElement("article");
     article.className = featured ? "card card-featured" : "card";
     article.dataset.status = card.status;
@@ -314,8 +291,8 @@
 
     // Stickers: NEW! on your latest finished artifact, WIP on ones in progress.
     let stickerText = "";
-    if (featured) stickerText = ui("stickerNew", lang);
-    else if (card.status === "wip") stickerText = ui("stickerWip", lang);
+    if (featured) stickerText = ui("stickerNew");
+    else if (card.status === "wip") stickerText = ui("stickerWip");
     if (stickerText) {
       const sticker = document.createElement("span");
       sticker.className = "sticker" + (featured ? "" : " sticker-wip");
@@ -328,7 +305,7 @@
 
     const tag = document.createElement("p");
     tag.className = "tag";
-    tag.textContent = cardTag(card, lang, featured);
+    tag.textContent = cardTag(card, featured);
 
     // The title is a button that opens the details pop-up. A CSS trick
     // stretches it over the whole card so the entire card is clickable.
@@ -336,13 +313,13 @@
     const open = document.createElement("button");
     open.type = "button";
     open.className = "card-open";
-    open.textContent = t(card.title, lang);
+    open.textContent = text(card.title);
     open.addEventListener("click", function () { openDetail(card); });
     title.append(open);
 
     const reflection = document.createElement("p");
     reflection.className = "reflection";
-    reflection.textContent = t(card.reflection, lang);
+    reflection.textContent = text(card.reflection);
 
     body.append(tag, title, reflection);
 
@@ -351,14 +328,14 @@
     const more = document.createElement("span");
     more.className = "card-more";
     more.setAttribute("aria-hidden", "true");
-    more.textContent = ui("details", lang) + " →";
+    more.textContent = ui("details") + " →";
     actions.append(more);
 
     if (card.link) {
       const link = document.createElement("a");
       link.className = "card-link";
       link.href = card.link;
-      link.textContent = ui("open", lang) + " ↗";
+      link.textContent = ui("open") + " ↗";
       if (isExternal(card.link)) {
         link.target = "_blank";
         link.rel = "noopener";
@@ -372,21 +349,21 @@
     return article;
   }
 
-  function renderCards(lang) {
+  function renderCards() {
     const latest = latestDone();
 
     const featuredSlot = document.getElementById("featured");
     featuredSlot.replaceChildren();
-    if (latest) featuredSlot.append(makeCard(latest, lang, true, 0));
+    if (latest) featuredSlot.append(makeCard(latest, true, 0));
 
     const grid = document.getElementById("cards");
     grid.replaceChildren();
     sortedCards()
       .filter(function (c) { return c !== latest; })
-      .forEach(function (card, i) { grid.append(makeCard(card, lang, false, i)); });
+      .forEach(function (card, i) { grid.append(makeCard(card, false, i)); });
   }
 
-  // ---------- About and contact ----------
+  // ---------- About ----------
 
   function renderSkills() {
     const list = document.getElementById("skills");
@@ -398,6 +375,8 @@
     });
     list.parentElement.hidden = !(SITE.skills && SITE.skills.length);
   }
+
+  // ---------- Contact ----------
 
   // Simple line icons for each kind of contact.
   const CONTACT_ICONS = {
@@ -414,13 +393,13 @@
   }
 
   // Copy text, with a fallback for browsers that block the clipboard.
-  function copyText(text, button, lang) {
+  function copyText(value, button) {
     function done() {
-      button.textContent = ui("copied", lang);
-      setTimeout(function () { button.textContent = ui("copy", lang); }, 1500);
+      button.textContent = ui("copied");
+      setTimeout(function () { button.textContent = ui("copy"); }, 1500);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, function () { selectFallback(button); });
+      navigator.clipboard.writeText(value).then(done, function () { selectFallback(button); });
     } else {
       selectFallback(button);
     }
@@ -436,7 +415,7 @@
     selection.addRange(range);
   }
 
-  function makeContactItem(kind, value, lang) {
+  function makeContactItem(kind, value) {
     const li = document.createElement("li");
     li.className = "contact-item";
 
@@ -459,10 +438,8 @@
     icon.className = "contact-icon";
     icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + CONTACT_ICONS[kind] + "</svg>";
 
-    const text = document.createElement("span");
-    text.className = "contact-text";
     const label = document.createElement("small");
-    label.textContent = ui(kind, lang);
+    label.textContent = ui(kind);
     const shown = document.createElement("span");
     shown.className = "contact-value";
     const display = kind === "email" || kind === "discord" ? value : shortUrl(value);
@@ -478,9 +455,12 @@
       }
     });
     if (chunk) shown.append(chunk);
-    text.append(label, shown);
 
-    main.append(icon, text);
+    const textBox = document.createElement("span");
+    textBox.className = "contact-text";
+    textBox.append(label, shown);
+
+    main.append(icon, textBox);
     li.append(main);
 
     // Email and Discord get a Copy button.
@@ -488,19 +468,19 @@
       const copy = document.createElement("button");
       copy.type = "button";
       copy.className = "copy-btn";
-      copy.textContent = ui("copy", lang);
-      copy.setAttribute("aria-label", ui("copy", lang) + " " + ui(kind, lang));
-      copy.addEventListener("click", function () { copyText(value, copy, lang); });
+      copy.textContent = ui("copy");
+      copy.setAttribute("aria-label", ui("copy") + " " + ui(kind));
+      copy.addEventListener("click", function () { copyText(value, copy); });
       li.append(copy);
     }
 
     return li;
   }
 
-  function renderContact(lang) {
-    setText("contact-heading", ui("contactHeading", lang));
-    setText("contact-title", ui("contactTitle", lang));
-    const message = t(SITE.contactMessage, lang);
+  function renderContact() {
+    setText("contact-heading", ui("contactHeading"));
+    setText("contact-title", ui("contactTitle"));
+    const message = text(SITE.contactMessage);
     setText("contact-message", message);
     document.getElementById("contact-message").hidden = !message;
 
@@ -510,7 +490,7 @@
     const kinds = ["email", "github", "linkedin", "itch", "discord"];
 
     kinds.forEach(function (kind) {
-      if (contact[kind]) list.append(makeContactItem(kind, contact[kind], lang));
+      if (contact[kind]) list.append(makeContactItem(kind, contact[kind]));
     });
 
     // Nothing filled in yet: show greyed-out slots as a reminder.
@@ -522,36 +502,14 @@
           '<div class="contact-main"><span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
           CONTACT_ICONS[kind] +
           '</svg></span><span class="contact-text"><small></small><span class="contact-value"></span></span></div>';
-        li.querySelector("small").textContent = ui(kind, lang);
-        li.querySelector(".contact-value").textContent = ui("notLinked", lang);
+        li.querySelector("small").textContent = ui(kind);
+        li.querySelector(".contact-value").textContent = ui("notLinked");
         list.append(li);
       });
     }
   }
 
-  // ---------- Language and theme buttons ----------
-
-  function makeLanguageButtons(current) {
-    const group = document.getElementById("lang-switch");
-    group.replaceChildren();
-    group.setAttribute("aria-label", ui("language", current));
-
-    // Hide the switcher entirely if there's only one language.
-    group.hidden = Object.keys(SITE.languages).length < 2;
-
-    Object.entries(SITE.languages).forEach(function ([code, label]) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.lang = code;
-      button.textContent = label;
-      button.setAttribute("aria-pressed", String(code === current));
-      button.addEventListener("click", function () {
-        save(STORAGE_KEY, code);
-        render(code);
-      });
-      group.append(button);
-    });
-  }
+  // ---------- Dark mode button ----------
 
   // The starting theme is picked by the small script in index.html;
   // this button just flips it and remembers the choice.
@@ -559,6 +517,9 @@
     const root = document.documentElement;
     const button = document.getElementById("theme-toggle");
     const meta = document.querySelector('meta[name="theme-color"]');
+
+    button.setAttribute("aria-label", ui("darkMode"));
+    button.title = ui("darkMode");
 
     function sync() {
       const dark = root.getAttribute("data-theme") !== "light";
@@ -582,9 +543,8 @@
   function revealOnScroll() {
     const items = document.querySelectorAll("[data-reveal]");
 
-    // After the first load (for example when switching language), or when
-    // animations are off, just show everything right away.
-    if (!motionOn || !firstRender || !("IntersectionObserver" in window)) {
+    // When animations are off, just show everything right away.
+    if (!motionOn || !("IntersectionObserver" in window)) {
       items.forEach(function (el) { el.classList.add("in"); });
       return;
     }
@@ -603,52 +563,35 @@
 
   // ---------- Put it all together ----------
 
-  function render(lang) {
-    currentLang = lang;
-    document.documentElement.lang = lang;
+  function render() {
     document.title = SITE.name + " · Portfolio";
 
     // Nav
     setText("brand", SITE.name);
-    setText("nav-about", ui("navAbout", lang));
-    setText("nav-artifacts", ui("navArtifacts", lang));
-    setText("nav-contact", ui("navContact", lang));
+    setText("nav-about", ui("navAbout"));
+    setText("nav-artifacts", ui("navArtifacts"));
+    setText("nav-contact", ui("navContact"));
 
     // Profile banner
-    setText("eyebrow", ui("eyebrow", lang));
+    setText("eyebrow", ui("eyebrow"));
     renderName();
-    setText("role", t(SITE.role, lang));
-    renderProgress(lang);
+    setText("role", text(SITE.role));
+    renderProgress();
 
     // About
-    setText("about-heading", ui("aboutHeading", lang));
-    setText("about-text", t(SITE.about, lang));
-    setText("skills-heading", ui("skillsHeading", lang));
+    setText("about-heading", ui("aboutHeading"));
+    setText("about-text", text(SITE.about));
+    setText("skills-heading", ui("skillsHeading"));
     renderSkills();
 
     // Artifacts
-    setText("artifacts-heading", ui("artifactsHeading", lang));
-    renderCards(lang);
+    setText("artifacts-heading", ui("artifactsHeading"));
+    renderCards();
 
     // Contact section and footer
-    renderContact(lang);
-    setText("footer-text", ui("footer", lang));
-    setText("back-to-top", ui("backToTop", lang) + " ↑");
-
-    makeLanguageButtons(lang);
-
-    const themeButton = document.getElementById("theme-toggle");
-    themeButton.setAttribute("aria-label", ui("darkMode", lang));
-    themeButton.title = ui("darkMode", lang);
-
-    // If the details pop-up is open, redraw it in the new language.
-    if (openCardNumber !== null) {
-      const card = SITE.cards.find(function (c) { return c.number === openCardNumber; });
-      if (card) fillDetail(card, lang);
-    }
-
-    revealOnScroll();
-    firstRender = false;
+    renderContact();
+    setText("footer-text", ui("footer"));
+    setText("back-to-top", ui("backToTop") + " ↑");
   }
 
   // Turn on the animation styles in styles.css (they all start with .motion).
@@ -662,5 +605,6 @@
   trackNavHeight();
   setupThemeToggle();
   setupDetail();
-  render(pickLanguage());
+  render();
+  revealOnScroll();
 })();

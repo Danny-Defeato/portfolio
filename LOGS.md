@@ -159,3 +159,13 @@ What I asked the chat (Claude) for, and what changed as I went.
 - **Status typos:** `"Done"` or `" wip "` now work the same as `"done"` and `"wip"`. Anything unrecognized counts as an idea.
 
 **Passed with no changes needed:** no sideways scrolling at any width, nothing stuck invisible after scroll animations, everything reachable by keyboard, achievements show once and only for finished artifacts, the pop-up switches language while open, and the page works even when browser storage is blocked.
+
+## 2026-10-09: English only
+
+**Asked:** Remove Spanish and keep everything in English, then brainstorm ideas to use in its place.
+
+**What changed**
+- Removed the English/Español switch from the nav bar.
+- `content.js` is simpler now: every piece of text is a plain string like `title: "This portfolio"` instead of `{ en: "...", es: "..." }`, and `ui` is a single list of labels.
+- Removed the language code from `main.js` and the Spanish text from `404.html`.
+- Claude built a preview page of ideas to fill the empty spot in the nav (see the next entry once I pick).
