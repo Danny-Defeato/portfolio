@@ -118,9 +118,9 @@ const SITE = {
       status: "done",
       link: "./",
       cover: "",
-      title: "This portfolio",
+      title: "Portfolio",
       // DRAFT: rewrite this in your own words before you submit.
-      reflection: "My first site deployed with GitHub Pages. I compared a lot of designs before landing on a game launcher style, and kept all the text in one file so updating a card takes a minute.",
+      reflection: "My first site deployed with GitHub Pages. I compared a lot of designs before landing on a game launcher-esque style. Will probably make frequent updates to the site as the quarter goes on.",
       details: "",
       images: []
     },
