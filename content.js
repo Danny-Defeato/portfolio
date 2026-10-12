@@ -88,7 +88,7 @@ const SITE = {
     notLinked: "Not linked yet",
     backToTop: "Back to top",
     darkMode: "Dark mode",
-    footer: "Built by hand with HTML, CSS and JavaScript."
+    footer: "Built with HTML, CSS and JavaScript."
   },
 
   /* -------------------------------------------------------------------
