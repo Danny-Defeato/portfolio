@@ -18,7 +18,7 @@ const SITE = {
   // ---------- Profile banner (top of the page) ----------
 
   // One line under your name.
-  role: "Senior CS student @ UWT · future game developer",
+  role: "Senior CS student @ UWT · Future game developer (hopefully)",
 
   // What you're working on right now, shown next to the progress bar.
   // Update it as the quarter goes, or set to "" to hide it.
