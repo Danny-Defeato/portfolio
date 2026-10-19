@@ -17,9 +17,9 @@
        deploy, replace YOUR-USERNAME below with your GitHub username
        (and "portfolio" with your repo name, if you named it differently). -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="John Nguyen · Portfolio">
+  <meta property="og:title" content="John · Portfolio">
   <meta property="og:description" content="Senior CS student and future game developer. Five things I'm building this quarter.">
-  <meta property="og:image" content="https://Danny-Defeato.github.io/portfolio/og-image.png">
+  <meta property="og:image" content="https://YOUR-USERNAME.github.io/portfolio/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -34,6 +34,17 @@
     // the wrong colors. Uses the visitor's saved choice, or else their
     // device setting.
     (function () {
+      // Tells styles.css that JavaScript is running.
+      document.documentElement.className += " js";
+
+      // Always open at the top of the page. Browsers normally jump back to
+      // where you'd scrolled before a reload, or to a section named in the
+      // address (like #artifacts, left there by clicking a nav link).
+      try {
+        if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+      } catch (e) {}
+
       var theme = null;
       try { theme = localStorage.getItem("portfolio-theme"); } catch (e) {}
       if (theme !== "dark" && theme !== "light") {
@@ -41,12 +52,64 @@
         theme = prefersLight ? "light" : "dark";
       }
       document.documentElement.setAttribute("data-theme", theme);
+
+      // Same for the color the visitor picked last time.
+      var root = document.documentElement;
+      var accent = null, custom = null;
+      try {
+        accent = localStorage.getItem("portfolio-accent");
+        custom = JSON.parse(localStorage.getItem("portfolio-custom-color") || "null");
+      } catch (e) {}
+      if (accent === "custom" && custom && custom.mid) {
+        var vars = { "--c-mid": custom.mid, "--c-hot": custom.hot, "--c-a2": custom.a2, "--c-glow": custom.glow,
+          "--c-soft": custom.soft, "--acc-d": custom.dark, "--acc-l": custom.light };
+        for (var k in vars) if (vars[k]) root.style.setProperty(k, vars[k]);
+      } else if (accent === "custom" && !(custom && custom.hex)) {
+        accent = null;
+      }
+      if (accent) root.setAttribute("data-accent", accent);
+
+      // Crash-and-reboot intro: plays the first time someone visits.
+      // Add ?intro=on to the address to see it again, or ?intro=off to skip it.
+      // If the browser blocks saved data, it can't remember the intro was
+      // seen, so skip it rather than show it on every visit.
+      var param = null, seen = null, canSave = true;
+      try { param = new URLSearchParams(location.search).get("intro"); } catch (e) {}
+      try { seen = localStorage.getItem("portfolio-intro-seen"); } catch (e) { canSave = false; }
+      var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (param === "on" || (param !== "off" && canSave && !seen && !calm)) root.className += " intro";
     })();
   </script>
 </head>
 <body>
   <!-- The text in this file is only a starting point; main.js fills
        everything in from content.js when the page loads. -->
+
+  <!-- Crash-and-reboot intro. Only shown when the script above adds the
+       "intro" class; main.js runs it and then removes it. -->
+  <div class="intro-layer" id="intro">
+    <div class="intro-fake">
+      <h1 id="intro-title">John's Homepage</h1>
+      <p>Welcome to my website!</p>
+      <hr>
+      <p><b>About me:</b> I am a computer science student.</p>
+      <p><b>My projects:</b></p>
+      <ul><li><span class="intro-link">Project 1</span></li><li><span class="intro-link">Project 2</span></li><li><span class="intro-link">Project 3</span></li></ul>
+      <p class="intro-foot">Last updated: <span id="intro-date"></span> &nbsp;|&nbsp; Visitors: <span class="intro-count">000247</span></p>
+    </div>
+    <div class="intro-hang" id="intro-hang" hidden><span id="intro-hang-title">John's Homepage (Not Responding)</span><i class="intro-spinner"></i></div>
+    <div class="intro-err" id="intro-err" hidden>
+      <div class="intro-err-box">
+        <b>FATAL ERROR</b>
+        <span>boring_homepage.html has stopped working.</span>
+        <span>Reason: too plain.</span>
+        <span>Loading the real one... <span id="intro-pct">0%</span></span>
+      </div>
+    </div>
+    <div class="intro-boot" id="intro-boot" hidden></div>
+    <div class="intro-pixel" id="intro-pixel" hidden></div>
+    <button class="intro-skip" id="intro-skip" type="button">Skip intro ›</button>
+  </div>
 
   <nav class="topbar" aria-label="Main">
     <div class="topbar-inner">
@@ -57,6 +120,19 @@
         <a href="#contact" id="nav-contact">Contact</a>
       </div>
       <div class="nav-tools">
+        <!-- Color picker: main.js adds one dot per color. -->
+        <div class="accent-picker" id="accent-picker" role="group" aria-label="Color"></div>
+
+
+        <a class="nav-pill nav-pill-strong" id="resume-btn" hidden>Resume ↗</a>
+
+        <!-- Sends Pixel away or calls him back. -->
+        <button class="theme-toggle pixel-toggle" id="pixel-toggle" type="button" aria-pressed="true" aria-label="Pixel" title="Pixel" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3.5v3.5"/><circle cx="12" cy="3" r="1"/><rect x="4" y="7" width="16" height="12" rx="4"/><path d="M9.5 12.5v1.5M14.5 12.5v1.5"/>
+          </svg>
+        </button>
+
         <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Dark mode" title="Dark mode">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>
@@ -103,7 +179,7 @@
 
       <section class="section" id="artifacts" aria-labelledby="artifacts-heading">
         <h2 id="artifacts-heading">My library</h2>
-        <div id="featured"></div>
+        <!-- One row of cards. On narrow screens it scrolls sideways. -->
         <div class="cards" id="cards"></div>
         <noscript><p>This page needs JavaScript turned on to show the project cards.</p></noscript>
       </section>
@@ -114,6 +190,7 @@
           <div class="contact-intro">
             <h3 id="contact-title">Let's connect</h3>
             <p id="contact-message"></p>
+            <p class="local-time" id="local-time" hidden><span class="time-dot" aria-hidden="true"></span><span><span id="local-time-label">My local time</span>: <b id="local-time-value"></b></span></p>
           </div>
           <ul class="contact-list" id="contact-list"></ul>
         </div>
@@ -137,23 +214,30 @@
       <div class="detail-text" id="detail-text"></div>
       <div class="detail-images" id="detail-images"></div>
       <div class="detail-actions">
-        <a class="play" id="detail-link" target="_blank" rel="noopener"></a>
+        <a class="play" id="detail-link"></a>
         <button class="ghost" type="button" id="detail-close">Close</button>
       </div>
     </div>
   </dialog>
 
-  <!-- Achievement pop-up. -->
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <span class="medal" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5-4.9-4.5 6.6-.8z" fill="currentColor"/></svg>
-    </span>
-    <span class="toast-text">
-      <small id="toast-label">Achievement unlocked</small>
-      <b id="toast-title"></b>
-    </span>
-    <span class="toast-xp" id="toast-xp">+100 XP</span>
-  </div>
+  <!-- Pixel, the guide robot. main.js shows it for first-time visitors. -->
+  <aside class="guide" id="guide" aria-label="Pixel" hidden>
+    <div class="pix-home" id="pixel-home">
+      <!-- main.js draws Pixel in here. -->
+      <button class="pix-bot" id="pixel-bot" type="button" aria-label="Pixel"></button>
+      <span class="pix-say" id="pixel-say" aria-hidden="true"></span>
+    </div>
+    <span class="sr-only" id="pixel-said" aria-live="polite"></span>
+    <div class="guide-bubble" id="guide-bubble" hidden>
+      <p class="guide-name" id="guide-name">Pixel</p>
+      <p class="guide-text"><span id="guide-typed" aria-hidden="true"></span><span class="sr-only" id="guide-said" aria-live="polite"></span></p>
+      <div class="guide-actions">
+        <button class="guide-btn" id="guide-next" type="button">Next tip</button>
+        <button class="guide-btn guide-btn-strong" id="guide-close" type="button">Got it</button>
+      </div>
+    </div>
+  </aside>
+
 
   <!-- Load order matters: content first, then the code that uses it. -->
   <script src="content.js"></script>
