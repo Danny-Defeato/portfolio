@@ -250,7 +250,7 @@ const SITE = {
       cover: "images/artifact2-cover.png",
       title: "Time Tracker",
       // DRAFT: rewrite this in your own words before you submit.
-      reflection: "A web app I will use to track how long I spend on studying, coding and everything else. My second project built with Claude Code. I planned it in phases, tested features before committing, and kept a log of every request and decision.",
+      reflection: "A web app I will use to track how long I spend on studying, coding and everything else. I see myself using this in my 360 class, which will later require me to track my work. I planned it in phases, tested features before committing, and kept a log of every request and decision.",
       details: "A time tracker that runs in the browser. Start a timer for whatever you're working on, and see time per task for today, any past day and the last 7 days. It also handles time you forgot to track, daily goals, themes, and Excel export. Everything stays in your own browser.\n\nTry it: danny-defeato.github.io/time-tracker. The repository's LOG.md records what I asked for, what changed, and what I decided or dropped.",
       images: ["images/artifact2-today.png"],
       pixel: "Your time tracker! It says I've been thrown around for 3 hours today."
