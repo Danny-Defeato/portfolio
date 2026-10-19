@@ -9,7 +9,7 @@
    ===================================================================== */
 
 const SITE = {
-  name: "John",
+  name: "John Nguyen",
 
   // Set to false to turn off all animations. Visitors whose device is set
   // to "reduce motion" never see them either way.
@@ -28,7 +28,7 @@ const SITE = {
   // ---------- Profile banner (top of the page) ----------
 
   // One line under your name.
-  role: "Senior CS student · future game developer",
+  role: "Senior CS student @ UWT · future game developer",
 
   // What you're working on right now, shown next to the progress bar.
   // Update it as the quarter goes, or set to "" to hide it.
@@ -127,8 +127,8 @@ const SITE = {
   // While all of them are empty, the section shows greyed-out
   // "Not linked yet" slots as a reminder.
   contact: {
-    email: "",      // e.g. "john@example.com"
-    github: "",     // e.g. "https://github.com/your-username"
+    email: "nguyenjohn922@gmail.com",      // e.g. "john@example.com"
+    github: "https://github.com/Danny-Defeato",     // e.g. "https://github.com/your-username"
     linkedin: "",   // e.g. "https://www.linkedin.com/in/your-name"
     itch: "",       // itch.io page for your games, e.g. "https://your-name.itch.io"
     discord: ""     // your Discord username, e.g. "john_dev"
@@ -250,8 +250,8 @@ const SITE = {
       cover: "images/artifact2-cover.png",
       title: "Time Tracker",
       // DRAFT: rewrite this in your own words before you submit.
-      reflection: "A web app I use to track how long I spend on studying, coding and everything else. My first project built with Claude Code: I planned it in phases, tested each feature myself before committing, and kept a log of every request and decision.",
-      details: "A time tracker that runs in the browser: start a timer for whatever you're working on, and see time per task for today, any past day and the last 7 days. It also handles time you forgot to track, daily goals, themes, and Excel export. Everything stays in your own browser.\n\nTry it: danny-defeato.github.io/time-tracker. The repository's LOG.md records what I asked for, what changed, and what I decided or dropped.",
+      reflection: "A web app I will use to track how long I spend on studying, coding and everything else. My second project built with Claude Code. I planned it in phases, tested features before committing, and kept a log of every request and decision.",
+      details: "A time tracker that runs in the browser. Start a timer for whatever you're working on, and see time per task for today, any past day and the last 7 days. It also handles time you forgot to track, daily goals, themes, and Excel export. Everything stays in your own browser.\n\nTry it: danny-defeato.github.io/time-tracker. The repository's LOG.md records what I asked for, what changed, and what I decided or dropped.",
       images: ["images/artifact2-today.png"],
       pixel: "Your time tracker! It says I've been thrown around for 3 hours today."
     },
