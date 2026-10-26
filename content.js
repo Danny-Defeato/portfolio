@@ -257,14 +257,15 @@ const SITE = {
     },
     {
       number: 3,
-      status: "idea",
-      link: "",
+      status: "done",
+      link: "https://github.com/Danny-Defeato/stuck-coach",
       cover: "",
-      title: "Dungeon map editor",
-      reflection: "A browser tool for drawing dungeon room layouts and exporting them for my team's Dungeon Adventure game.",
-      details: "",
+      title: "Hint Coach",
+      // DRAFT: check this still sounds like you before you submit.
+      reflection: "The model, working through my code, gave me decent questions to guide me through fixing errors in sample Java code. I was surprised it worked at all. The questions were vague enough to inch me closer to the answer without saying it outright. Next I'd add more language support and make /stuck a global command.",
+      details: "Hint Coach is a Claude Code command (/stuck) that helps a student whose Java code won't build. It runs the build itself, then asks a model to explain the real error in plain words and give a hint that gets more specific each time it's used. Plain code decides how much help is allowed and checks that the model never hands over the whole answer.\n\nThe model's job is small: explain the error, write a hint or a question, and judge whether a student's own sentence matches what they fixed. My code runs the build, tracks the hint level, enforces the limits, checks every reply, and saves the files. It also has policy modes, a duck mode that only asks questions, a /fixed reflection step, and a hook that offers help after three failed builds.\n\nThe repository has a README, a step-by-step tutorial, and a LOG.md that records what I asked for, what changed, what the model got wrong, and what I decided.",
       images: [],
-      pixel: "A dungeon editor? Put a snack room in it for me."
+      pixel: "Stuck on a bug? This one asks questions and won't spoil the answer."
     },
     {
       number: 4,
