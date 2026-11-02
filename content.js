@@ -269,14 +269,15 @@ const SITE = {
     },
     {
       number: 4,
-      status: "idea",
-      link: "",
+      status: "wip",
+      link: "https://github.com/aalemany00/CouchCrew",
       cover: "",
-      title: "Recipe scaler",
-      reflection: "Type in the number of servings, get the adjusted amounts.",
-      details: "",
+      title: "CouchCrew",
+      // DRAFT: replace this with your own words (what was hard, what surprised you, what you'd do next).
+      reflection: "A watch-party site my team of three built for people who can't be in the same room. I built the synced playback: when the room's leader plays, pauses or seeks a YouTube video, everyone else's player follows. I also researched whether Netflix and Hulu could work too.",
+      details: "CouchCrew is a website where a group joins a room by link, chats, turns on camera or screen share, and watches the same video together, with no app to install. We built it as a team of three: Adrian did rooms, chat and the live backbone, Henry did video and screen share, and I did Job C, synced watch-party playback.\n\nMy part: when the room's leader plays, pauses or seeks a YouTube video, everyone else's player follows. It uses the YouTube player API and the server's relay. A late joiner asks the room for the current moment, seeks are detected by polling because YouTube has no seek event, and a heartbeat every 5 seconds corrects drift. I tested it with two real browser tabs. Adrian later changed my \"anyone can control it\" choice to leader-only, and the player keeps that rule.\n\nI also did a research spike on syncing Netflix and Hulu. DRM blocks it, and the only workaround needs every viewer to install an extension and hold their own subscription, so we dropped it. Screen share covers watching those services, and the reasoning is in the log.\n\nWe worked in branches with reviewed pull requests, and the repository's LOG.md records what each of us decided, built or dropped. Live site: couch-crew.vercel.app",
       images: [],
-      pixel: "Math, but make it tasty."
+      pixel: "Movie night, but everyone's far apart. Press play together!"
     },
     {
       number: 5,
