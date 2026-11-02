@@ -271,7 +271,7 @@ const SITE = {
       number: 4,
       status: "wip",
       link: "https://github.com/aalemany00/CouchCrew",
-      cover: "",
+      cover: "images/artifact4-cover.png",
       title: "CouchCrew",
       // DRAFT: replace this with your own words (what was hard, what surprised you, what you'd do next).
       reflection: "A watch-party site my team of three built for people who can't be in the same room. I built the synced playback: when the room's leader plays, pauses or seeks a YouTube video, everyone else's player follows. I also researched whether Netflix and Hulu could work too.",
