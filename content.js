@@ -269,7 +269,7 @@ const SITE = {
     },
     {
       number: 4,
-      status: "wip",
+      status: "done",
       link: "https://github.com/aalemany00/CouchCrew",
       cover: "images/artifact4-cover.png",
       title: "CouchCrew",
