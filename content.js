@@ -32,7 +32,7 @@ const SITE = {
 
   // What you're working on right now, shown next to the progress bar.
   // Update it as the quarter goes, or set to "" to hide it.
-  now: "Planning Artifact 4",
+  now: "Planning Artifact 5",
 
   // ---------- Pixel, the guide robot ----------
   // A little robot who lives in the bottom corner. On someone's first
